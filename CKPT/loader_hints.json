@@ -1,0 +1,21 @@
+{
+  "rnn_ckpt": "rnn_best_ema.pt",
+  "trx_ckpt": "transformer_byte_best.pt",
+  "gnn_ckpt": "gnn_best.pt",
+  "pred_files": {
+    "rnn": "rnn_test_preds.csv",
+    "transformer": "transformer_test_preds.csv",
+    "gnn": "gnn_test_preds.csv"
+  },
+  "threshold_files": {
+    "rnn": "rnn_best_threshold.json",
+    "transformer": "transformer_best_threshold.json",
+    "gnn": "gnn_best_threshold.json",
+    "gnn_calibrated": "gnn_best_threshold_calibrated.json",
+    "ensemble": "ensemble_val_best_threshold.json"
+  },
+  "vocab_files": {
+    "rnn": "rnn_url_vocab.json",
+    "gnn_tags": "gnn_tag_vocab.json"
+  }
+}

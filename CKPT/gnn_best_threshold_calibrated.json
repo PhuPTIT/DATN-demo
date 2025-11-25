@@ -1,0 +1,1 @@
+{"threshold": 0.25024437927663734, "policy": "f\u03b22.0_floor0.6", "val_precision": 0.6091954022988506, "val_recall": 0.6973684210526315, "val_f1": 0.6503067484662576, "use_fbeta": true, "beta": 2.0, "precision_floor": 0.6}
