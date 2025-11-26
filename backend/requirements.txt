@@ -1,7 +1,7 @@
 ﻿# Core dependencies
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-pydantic==2.5.0
+pydantic>=2.5.0
 python-multipart==0.0.6
 
 # ML/DL
@@ -13,4 +13,4 @@ scikit-learn>=1.4.0
 # Utilities
 tldextract>=5.1.0
 requests==2.31.0
-lxml==4.9.3
+lxml>=4.9.3
