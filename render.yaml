@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: datn-demo-backend
+    runtime: python_3
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && python main.py
+    envVars:
+      - key: PORT
+        value: 10000
+    regions:
+      - sgp
+
+  - type: web
+    name: datn-demo-frontend
+    runtime: node
+    buildCommand: npm run build
+    startCommand: npm run preview
+    envVars:
+      - key: VITE_API_URL
+        value: https://datn-demo-backend.onrender.com
+      - key: PORT
+        value: 4173
+    regions:
+      - sgp
