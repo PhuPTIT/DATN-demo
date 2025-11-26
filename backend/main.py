@@ -1002,14 +1002,42 @@ async def proxy_analyze_url_full(request: dict):
         normalize = request.get("normalize", True)
         url_request = UrlCheckRequest(url=url, normalize=normalize)
         result = await analyze_url_full(url_request)
-        return result
-    except HTTPException:
-        raise
+        
+        # Return as JSONResponse with explicit CORS headers
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            content=result,
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            }
+        )
+    except HTTPException as e:
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=e.status_code,
+            content={"detail": e.detail},
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            }
+        )
     except Exception as e:
         print(f"[ERROR] /proxy/analyze_url_full failed: {str(e)}")
         import traceback
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=500,
+            content={"detail": f"Analysis failed: {str(e)}"},
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            }
+        )
 
 
 @app.post("/proxy/analyze_html_file")
@@ -1022,14 +1050,42 @@ async def proxy_analyze_html_file(request: dict):
         
         html_request = HtmlCheckRequest(html=html_content)
         result = await analyze_html_file(html_request)
-        return result
-    except HTTPException:
-        raise
+        
+        # Return as JSONResponse with explicit CORS headers
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            content=result,
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            }
+        )
+    except HTTPException as e:
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=e.status_code,
+            content={"detail": e.detail},
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            }
+        )
     except Exception as e:
         print(f"[ERROR] /proxy/analyze_html_file failed: {str(e)}")
         import traceback
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=500,
+            content={"detail": f"Analysis failed: {str(e)}"},
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            }
+        )
 
 
 @app.exception_handler(Exception)
