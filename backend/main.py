@@ -994,24 +994,42 @@ async def clear_cache():
 @app.post("/proxy/analyze_url_full")
 async def proxy_analyze_url_full(request: dict):
     """Proxy endpoint for analyze_url_full"""
-    url = request.get("url", "").strip()
-    if not url:
-        raise HTTPException(status_code=400, detail="URL is required")
-    
-    normalize = request.get("normalize", True)
-    url_request = UrlCheckRequest(url=url, normalize=normalize)
-    return await analyze_url_full(url_request)
+    try:
+        url = request.get("url", "").strip()
+        if not url:
+            raise HTTPException(status_code=400, detail="URL is required")
+        
+        normalize = request.get("normalize", True)
+        url_request = UrlCheckRequest(url=url, normalize=normalize)
+        result = await analyze_url_full(url_request)
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"[ERROR] /proxy/analyze_url_full failed: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
 
 
 @app.post("/proxy/analyze_html_file")
 async def proxy_analyze_html_file(request: dict):
     """Proxy endpoint for analyze_html_file"""
-    html_content = request.get("html_content", "").strip()
-    if not html_content:
-        raise HTTPException(status_code=400, detail="HTML content is required")
-    
-    html_request = HtmlCheckRequest(html=html_content)
-    return await analyze_html_file(html_request)
+    try:
+        html_content = request.get("html_content", "").strip()
+        if not html_content:
+            raise HTTPException(status_code=400, detail="HTML content is required")
+        
+        html_request = HtmlCheckRequest(html=html_content)
+        result = await analyze_html_file(html_request)
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"[ERROR] /proxy/analyze_html_file failed: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
 
 
 @app.exception_handler(Exception)
