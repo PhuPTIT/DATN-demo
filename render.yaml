@@ -13,7 +13,7 @@ services:
   - type: web
     name: datn-demo-frontend
     runtime: node
-    buildCommand: npm run build
+    buildCommand: npm install && npm run build
     startCommand: npm run preview
     envVars:
       - key: VITE_API_URL
