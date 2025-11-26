@@ -234,7 +234,7 @@ export default function Index() {
     setError("");
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/analyze_url_full`, {
+      const response = await fetch(`${API_BASE_URL}/proxy/analyze_url_full`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url, normalize: true }),
@@ -268,10 +268,10 @@ export default function Index() {
     setLoading(true);
     try {
       const html = await htmlFile.text();
-      const response = await fetch(`${API_BASE_URL}/api/analyze_html_file`, {
+      const response = await fetch(`${API_BASE_URL}/proxy/analyze_html_file`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ html }),
+        body: JSON.stringify({ html_content: html }),
       });
 
       if (!response.ok) {

@@ -987,6 +987,32 @@ async def clear_cache():
 
 
 # ============ Error Handlers ============
+# ============ Proxy Endpoints (For Render CORS Bypass) ============
+# Frontend calls these endpoints which internally call the main endpoints
+# This avoids CORS issues since both request and response are same-origin
+
+@app.post("/proxy/analyze_url_full", response_model=EnsembleResponse)
+async def proxy_analyze_url_full(request: UrlCheckRequest):
+    """Proxy endpoint for analyze_url_full - bypasses CORS by calling from backend"""
+    return await analyze_url_full(request)
+
+
+@app.post("/proxy/analyze_html_file", response_model=EnsembleResponse)
+async def proxy_analyze_html_file(request: dict):
+    """Proxy endpoint for analyze_html_file - bypasses CORS by calling from backend"""
+    html_request = HtmlCheckRequest(html=request.get("html_content", ""))
+    # Fetch URL if provided
+    url = request.get("url", "")
+    if url:
+        html_content, success = fetch_html_sync(url)
+        if success:
+            html_request.html = html_content
+        else:
+            html_request.html = ""
+    
+    return await analyze_html_file(html_request)
+
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
     return {
