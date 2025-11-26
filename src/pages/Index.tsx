@@ -5,8 +5,17 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronDown, Copy, Download, RotateCw, Trash2, Moon, Sun } from "lucide-react";
 
-// API Base URL - works both locally and on Railway
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8002";
+// API Base URL - works both locally and on Render
+// For production on Render, use https://datn-demo.onrender.com
+// For local development, use http://localhost:8002
+const API_BASE_URL = (() => {
+  // Check if running on Render (datn-demo-frontend.onrender.com)
+  if (typeof window !== 'undefined' && window.location.hostname.includes('onrender.com')) {
+    return 'https://datn-demo.onrender.com';
+  }
+  // Otherwise use env variable or localhost
+  return import.meta.env.VITE_API_URL || "http://localhost:8002";
+})();
 
 interface AnalysisResult {
   probability: number;
