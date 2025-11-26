@@ -234,53 +234,51 @@ url_model = None
 html_model = None
 dom_model = None
 ensemble = None
+models_loaded = False
 
-def load_models():
+def load_models_if_needed():
     """Load all models on first request (lazy loading to save memory)"""
-    global url_model, html_model, dom_model, ensemble
+    global url_model, html_model, dom_model, ensemble, models_loaded
     
-    if url_model is not None and html_model is not None and dom_model is not None:
+    if models_loaded:
         return  # Already loaded
     
     print("[INFO] Loading models on first request...")
     
     try:
-        if url_model is None:
-            # Load URL model (RNN)
-            url_model = UrlModelWrapper(
-                ckpt_path=RNN_CKPT,
-                vocab_path=RNN_URL_VOCAB,
-                threshold_path=RNN_THRESHOLD_JSON,
-                device=DEVICE
-            )
-            print("[OK] URL model (RNN) loaded")
+        # Load URL model (RNN)
+        url_model = UrlModelWrapper(
+            ckpt_path=RNN_CKPT,
+            vocab_path=RNN_URL_VOCAB,
+            threshold_path=RNN_THRESHOLD_JSON,
+            device=DEVICE
+        )
+        print("[OK] URL model (RNN) loaded")
     except Exception as e:
         print(f"[ERROR] Failed to load URL model: {e}")
         url_model = None
 
     try:
-        if html_model is None:
-            # Load HTML model (Transformer)
-            html_model = HtmlModelWrapper(
-                ckpt_path=TRANSFORMER_CKPT,
-                threshold_path=TRANSFORMER_THRESHOLD_JSON,
-                device=DEVICE
-            )
-            print("[OK] HTML model (Transformer) loaded")
+        # Load HTML model (Transformer)
+        html_model = HtmlModelWrapper(
+            ckpt_path=TRANSFORMER_CKPT,
+            threshold_path=TRANSFORMER_THRESHOLD_JSON,
+            device=DEVICE
+        )
+        print("[OK] HTML model (Transformer) loaded")
     except Exception as e:
         print(f"[ERROR] Failed to load HTML model: {e}")
         html_model = None
 
     try:
-        if dom_model is None:
-            # Load DOM model (GCN)
-            dom_model = DomModelWrapper(
-                ckpt_path=GNN_CKPT,
-                tag_vocab_path=GNN_TAG_VOCAB,
-                threshold_path=GNN_THRESHOLD_JSON,
-                device=DEVICE
-            )
-            print("[OK] DOM model (GCN) loaded")
+        # Load DOM model (GCN)
+        dom_model = DomModelWrapper(
+            ckpt_path=GNN_CKPT,
+            tag_vocab_path=GNN_TAG_VOCAB,
+            threshold_path=GNN_THRESHOLD_JSON,
+            device=DEVICE
+        )
+        print("[OK] DOM model (GCN) loaded")
     except Exception as e:
         print(f"[ERROR] Failed to load DOM model: {e}")
         dom_model = None
@@ -297,6 +295,9 @@ def load_models():
     except Exception as e:
         print(f"[ERROR] Failed to create ensemble: {e}")
         ensemble = None
+    
+    models_loaded = True
+
 
 
 
@@ -1014,7 +1015,7 @@ async def proxy_analyze_url_full(request: dict):
     from fastapi.responses import JSONResponse
     try:
         # Load models on first request
-        load_models()
+        load_models_if_needed()
         
         url = request.get("url", "").strip()
         if not url:
@@ -1066,7 +1067,7 @@ async def proxy_analyze_html_file(request: dict):
     from fastapi.responses import JSONResponse
     try:
         # Load models on first request
-        load_models()
+        load_models_if_needed()
         
         html_content = request.get("html_content", "").strip()
         if not html_content:
