@@ -994,25 +994,24 @@ async def clear_cache():
 @app.post("/proxy/analyze_url_full")
 async def proxy_analyze_url_full(request: dict):
     """Proxy endpoint for analyze_url_full"""
-    try:
-        url_request = UrlCheckRequest(
-            url=request.get("url", ""),
-            normalize=request.get("normalize", True)
-        )
-        return await analyze_url_full(url_request)
-    except Exception as e:
-        return {"error": str(e), "status": 500}
+    url = request.get("url", "").strip()
+    if not url:
+        raise HTTPException(status_code=400, detail="URL is required")
+    
+    normalize = request.get("normalize", True)
+    url_request = UrlCheckRequest(url=url, normalize=normalize)
+    return await analyze_url_full(url_request)
 
 
 @app.post("/proxy/analyze_html_file")
 async def proxy_analyze_html_file(request: dict):
     """Proxy endpoint for analyze_html_file"""
-    try:
-        html_content = request.get("html_content", "")
-        html_request = HtmlCheckRequest(html=html_content)
-        return await analyze_html_file(html_request)
-    except Exception as e:
-        return {"error": str(e), "status": 500}
+    html_content = request.get("html_content", "").strip()
+    if not html_content:
+        raise HTTPException(status_code=400, detail="HTML content is required")
+    
+    html_request = HtmlCheckRequest(html=html_content)
+    return await analyze_html_file(html_request)
 
 
 @app.exception_handler(Exception)
