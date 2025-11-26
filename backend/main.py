@@ -994,6 +994,7 @@ async def clear_cache():
 @app.post("/proxy/analyze_url_full")
 async def proxy_analyze_url_full(request: dict):
     """Proxy endpoint for analyze_url_full"""
+    from fastapi.responses import JSONResponse
     try:
         url = request.get("url", "").strip()
         if not url:
@@ -1003,13 +1004,12 @@ async def proxy_analyze_url_full(request: dict):
         url_request = UrlCheckRequest(url=url, normalize=normalize)
         result = await analyze_url_full(url_request)
         
-        # Return as JSONResponse with explicit CORS headers
-        from fastapi.responses import JSONResponse
         return JSONResponse(
             content=result,
+            status_code=200,
             headers={
                 "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
             }
         )
@@ -1020,7 +1020,7 @@ async def proxy_analyze_url_full(request: dict):
             content={"detail": e.detail},
             headers={
                 "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
             }
         )
@@ -1034,7 +1034,7 @@ async def proxy_analyze_url_full(request: dict):
             content={"detail": f"Analysis failed: {str(e)}"},
             headers={
                 "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
             }
         )
@@ -1043,6 +1043,7 @@ async def proxy_analyze_url_full(request: dict):
 @app.post("/proxy/analyze_html_file")
 async def proxy_analyze_html_file(request: dict):
     """Proxy endpoint for analyze_html_file"""
+    from fastapi.responses import JSONResponse
     try:
         html_content = request.get("html_content", "").strip()
         if not html_content:
@@ -1051,13 +1052,12 @@ async def proxy_analyze_html_file(request: dict):
         html_request = HtmlCheckRequest(html=html_content)
         result = await analyze_html_file(html_request)
         
-        # Return as JSONResponse with explicit CORS headers
-        from fastapi.responses import JSONResponse
         return JSONResponse(
             content=result,
+            status_code=200,
             headers={
                 "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
             }
         )
@@ -1068,7 +1068,7 @@ async def proxy_analyze_html_file(request: dict):
             content={"detail": e.detail},
             headers={
                 "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
             }
         )
@@ -1082,10 +1082,41 @@ async def proxy_analyze_html_file(request: dict):
             content={"detail": f"Analysis failed: {str(e)}"},
             headers={
                 "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
             }
         )
+
+
+# ============ OPTIONS Handlers for CORS Preflight ============
+@app.options("/proxy/analyze_url_full")
+async def options_analyze_url_full():
+    """Handle CORS preflight for /proxy/analyze_url_full"""
+    from fastapi.responses import Response
+    return Response(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            "Access-Control-Max-Age": "3600",
+        }
+    )
+
+
+@app.options("/proxy/analyze_html_file")
+async def options_analyze_html_file():
+    """Handle CORS preflight for /proxy/analyze_html_file"""
+    from fastapi.responses import Response
+    return Response(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            "Access-Control-Max-Age": "3600",
+        }
+    )
 
 
 @app.exception_handler(Exception)
