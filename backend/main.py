@@ -4,6 +4,9 @@ Serves 3 endpoints for URL, HTML, and DOM classification
 """
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware import Middleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 from pydantic import BaseModel
 import json
 from pathlib import Path
@@ -138,6 +141,65 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Custom middleware to ensure CORS headers are always present (for Render proxy compatibility)
+@app.middleware("http")
+async def add_cors_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "https://datn-demo-frontend.onrender.com"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    response.headers["Access-Control-Max-Age"] = "3600"
+    return response
+
+
+# Custom middleware to ensure CORS headers are always present
+class CORSHeaderMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        # Get the origin from request
+        origin = request.headers.get("origin")
+        allowed_origins = [
+            "https://datn-demo-frontend.onrender.com",
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://localhost:4173",
+            "http://localhost:8080",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:5173",
+            "http://127.0.0.1:4173",
+            "http://127.0.0.1:8080",
+        ]
+        
+        # Handle preflight OPTIONS requests
+        if request.method == "OPTIONS":
+            if origin in allowed_origins:
+                return Response(
+                    status_code=200,
+                    headers={
+                        "Access-Control-Allow-Origin": origin,
+                        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                        "Access-Control-Allow-Credentials": "true",
+                        "Access-Control-Max-Age": "3600",
+                    }
+                )
+        
+        # Process the request
+        response = await call_next(request)
+        
+        # Add CORS headers to all responses
+        if origin in allowed_origins:
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        
+        return response
+
+
+# Add the custom middleware
+app.add_middleware(CORSHeaderMiddleware)
 
 
 # ============ Helpers for Parallel Processing ============
