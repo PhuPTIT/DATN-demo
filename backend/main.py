@@ -226,6 +226,7 @@ except Exception as e:
 @app.get("/")
 async def root():
     """Health check endpoint"""
+    # CORS middleware active with explicit origins for Render deployment
     return {
         "message": "URL Guardian Backend is running",
         "version": "1.0.0",
