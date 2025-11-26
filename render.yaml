@@ -1,0 +1,25 @@
+services:
+  # Backend service (FastAPI)
+  - type: web
+    name: datn-demo-backend
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: python backend/main.py
+    envVars:
+      - key: PORT
+        value: 8000
+
+  # Frontend service (Vite)
+  - type: web
+    name: datn-demo-frontend
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview
+    staticSite: false
+    envVars:
+      - key: VITE_API_URL
+        value: https://datn-demo-backend.onrender.com
