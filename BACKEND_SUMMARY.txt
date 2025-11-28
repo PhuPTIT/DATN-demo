@@ -23,11 +23,23 @@ backend/
 │   ├── architectures.py             ← GRUUrl, ByteTransformer, GCNClassifier
 │   ├── preprocessing.py             ← Input encoding (URL, HTML, DOM)
 │   ├── inference.py                 ← Model wrappers & ensemble
-│   └── [Loaded from CKPT/]          ← Checkpoints symlink
+│   └── [Loaded from ../models/]     ← Checkpoints reference
 │
 ├── README.md                        ← Full user documentation
 ├── IMPLEMENTATION.md                ← Implementation details & usage
 └── ARCHITECTURE.md                  ← System architecture diagrams
+
+📁 PROJECT STRUCTURE (After Reorganization)
+───────────────────────────────────────────────────────────────────────────────
+DATN-demo/
+├── backend/                         ← Backend API (Python/FastAPI)
+├── frontend/                        ← Frontend UI (React/Vite)
+├── models/                          ← Model checkpoints (formerly CKPT/)
+├── docs/                            ← Project documentation hub
+├── tests/                           ← Integration & unit tests
+├── scripts/                         ← Utility scripts
+├── notebooks/                       ← Jupyter notebooks
+└── STRUCTURE.md                     ← Project structure guide
 
 ───────────────────────────────────────────────────────────────────────────────
 
@@ -136,9 +148,9 @@ Step 2: Run Server
   $ python main.py
   
   Output:
-    ✅ URL model (RNN) loaded
-    ✅ HTML model (Transformer) loaded
-    ✅ DOM model (GCN) loaded
+    ✅ URL model (RNN) loaded from ../models/
+    ✅ HTML model (Transformer) loaded from ../models/
+    ✅ DOM model (GCN) loaded from ../models/
     ✅ Ensemble predictor created
     
     🌐 Starting server on 0.0.0.0:8000
@@ -148,6 +160,11 @@ Step 3: Test in Another Terminal
   $ curl -X POST http://localhost:8000/api/check_url_fast \
       -H "Content-Type: application/json" \
       -d '{"url": "https://example.com"}'
+
+🔗 Frontend Integration:
+  Frontend (at frontend/ folder) connects to backend at:
+  - Development: http://localhost:8000
+  - Production: Configure API_BASE_URL in frontend build
 
 ───────────────────────────────────────────────────────────────────────────────
 

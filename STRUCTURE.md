@@ -1,83 +1,91 @@
 # Project Structure
 
-This document describes the reorganized folder structure of the DATN-demo project.
+This document describes the reorganized folder structure of the DATN-demo project for **staging readiness and team collaboration**.
 
-## Overview
+## Quick Overview
 
-The project is organized into logical domains to support clarity, deployment, and team collaboration.
+The project is split into **frontend**, **backend**, **documentation**, and **assets** for clear separation of concerns and independent CI/CD pipelines.
 
 ```
 DATN-demo/
-├── backend/                 # Python backend (FastAPI/Flask) for phishing detection API
-│   ├── models_src/         # Model inference code (architectures, preprocessing)
-│   ├── main.py             # API entry point
-│   ├── config.py           # Backend configuration
+├── 📦 backend/              Python FastAPI backend (phishing detection API)
+├── 🎨 frontend/             React + Vite frontend (web UI)
+├── 📚 docs/                 Comprehensive documentation and guides
+├── 🤖 models/               Pre-trained ML model checkpoints
+├── 📓 notebooks/            Jupyter notebooks for research
+├── 🔧 scripts/              Utility and automation scripts
+├── ✅ tests/                Integration and unit tests
+└── 📋 STRUCTURE.md          This file
+```
+
+## Directory Tree (Full)
+
+```
+DATN-demo/
+├── backend/                 # 🔵 Python Backend (FastAPI)
+│   ├── models_src/         # Model architectures, preprocessing, inference
+│   │   ├── architectures.py    # PyTorch models (RNN, Transformer, GCN)
+│   │   ├── preprocessing.py    # Input encoding (URL, HTML, DOM)
+│   │   └── inference.py        # Model wrappers & ensemble
+│   ├── main.py             # FastAPI application & 3 endpoints
+│   ├── config.py           # Configuration & model paths
 │   ├── requirements.txt    # Python dependencies
-│   └── README.md           # Backend-specific docs
+│   ├── setup.sh            # Environment setup
+│   ├── README.md           # Backend documentation
+│   ├── IMPLEMENTATION.md   # Implementation details
+│   └── ARCHITECTURE.md     # System architecture
 │
-├── frontend/                # React TypeScript frontend (Vite)
-│   ├── src/                # React source code
-│   │   ├── components/     # Reusable React components
+├── frontend/                # 🎨 React Frontend (Vite + TypeScript)
+│   ├── src/                # Source code
+│   │   ├── components/     # React components (UI, helpers)
 │   │   ├── pages/          # Page components
-│   │   ├── hooks/          # Custom React hooks
-│   │   ├── lib/            # Frontend utilities and helpers
-│   │   ├── App.tsx         # Main app component
+│   │   ├── hooks/          # Custom hooks
+│   │   ├── lib/            # Utilities
+│   │   ├── App.tsx         # Main app
 │   │   └── main.tsx        # Entry point
-│   ├── public/             # Static assets (served as-is)
-│   ├── package.json        # Frontend dependencies (Node/Bun)
-│   ├── vite.config.ts      # Vite build configuration
+│   ├── public/             # Static assets
+│   ├── package.json        # Dependencies (Node/Bun)
+│   ├── vite.config.ts      # Vite build config
 │   ├── tsconfig.json       # TypeScript config
-│   ├── tailwind.config.ts  # Tailwind CSS config
-│   ├── postcss.config.js   # PostCSS config
-│   ├── eslint.config.js    # ESLint config
-│   ├── index.html          # HTML entry point
-│   └── components.json     # Shadcn components config
+│   ├── tailwind.config.ts  # Tailwind CSS
+│   ├── eslint.config.js    # Linting rules
+│   └── index.html          # HTML entry
 │
-├── docs/                    # Comprehensive documentation hub
+├── docs/                    # 📚 Documentation Hub
 │   ├── deployment/         # Deployment guides (Railway, etc.)
-│   ├── quick-start/        # Quick-start guides for devs and staging
-│   ├── technical/          # Technical deep-dives (architecture, decisions)
-│   ├── tests/              # Test guides and acceptance criteria
-│   ├── reports/            # Status reports, build logs, verification results
-│   ├── analysis/           # Analysis docs (phishing patterns, model eval)
-│   ├── notes/              # Team notes and handoff docs
+│   ├── quick-start/        # Quick-start for devs & staging
+│   ├── technical/          # Architecture, decisions, checklists
+│   ├── tests/              # QA test guides
+│   ├── reports/            # Build status, verification results
+│   ├── analysis/           # Model analysis, phishing patterns
+│   ├── notes/              # Team handoff notes
 │   ├── readmes/            # README variations
-│   └── other/              # Miscellaneous docs
+│   └── other/              # Miscellaneous
 │
-├── models/                  # Trained model checkpoints and artifacts
-│   ├── *.pt                # PyTorch model weights (GNN, RNN, Transformer)
-│   ├── *_threshold.json    # Decision thresholds per model
-│   ├── *_vocab.json        # Vocabulary files for embeddings
-│   ├── *.csv               # Predictions and CV results
-│   ├── *.jsonl             # Graph/dataset files
-│   └── README.md           # Model inventory and usage guide
+├── models/                  # 🤖 Model Checkpoints & Artifacts
+│   ├── *.pt                # PyTorch weights (RNN, Transformer, GCN)
+│   ├── *_threshold.json    # Decision thresholds
+│   ├── *_vocab.json        # Vocabulary files
+│   ├── *.csv               # Predictions, CV results
+│   ├── *.jsonl             # Graph, dataset files
+│   └── README.md           # Model inventory
 │
-├── notebooks/              # Jupyter notebooks (research, experiments)
-│   └── *.ipynb             # Notebook files
+├── notebooks/              # 📓 Jupyter Notebooks
+│   └── *.ipynb             # Research & experiment notebooks
 │
-├── scripts/                # Automation and utility scripts
+├── scripts/                # 🔧 Automation Scripts
 │   ├── launch_app.py       # App launcher
 │   ├── run_backend.py      # Backend runner
 │   ├── start_backend.py    # Backend startup
 │   ├── proxy.py            # Proxy utility
 │   └── setup.sh            # Environment setup
 │
-├── configs/                # Configuration files (centralized)
-│   ├── tsconfig.json       # TypeScript config
-│   ├── tailwind.config.ts  # Tailwind CSS config
-│   ├── postcss.config.js   # PostCSS config
-│   ├── eslint.config.js    # ESLint config
-│   └── vite.config.ts      # Vite build config (at root, can symlink)
-│
-├── tests/                  # Integration and backend tests
+├── tests/                  # ✅ Tests
 │   ├── test_endpoint.py    # API endpoint tests
-│   ├── test_full_pipeline.py
-│   ├── verify_normalize.py
-│   └── (pytest configs)
+│   ├── test_full_pipeline.py # Pipeline tests
+│   └── verify_normalize.py # Data verification
 │
-├── package.json            # Placeholder (real package.json is in frontend/)
-├── README.md               # Root project README
-
+└── STRUCTURE.md            # This file
 ```
 
 ## Directory Responsibilities
@@ -95,25 +103,35 @@ DATN-demo/
 
 ## Migration Notes
 
-This structure was reorganized on **Nov 28, 2025**:
-- **Phase 1:** `docs-collected/` → `docs/`, `CKPT/` → `models/`, scripts → `scripts/`
-- **Phase 2:** Frontend/backend split:
-  - `src/` → `frontend/src/`
-  - `public/` → `frontend/public/`
-  - `package.json`, `vite.config.ts`, `index.html` → `frontend/`
-  - Frontend configs (`tsconfig.*`, `eslint.config.js`, `tailwind.config.ts`) → `frontend/`
+This structure was reorganized on **Nov 28, 2025** for staging readiness:
+
+**Phase 1 - Documentation & Assets:**
+- `docs-collected/` → `docs/` (with 8 organized subfolders)
+- `CKPT/` → `models/` (model checkpoints and artifacts)
+- `datn-phishing-fine-tuning-update.ipynb` → `notebooks/`
+- Top-level scripts → `scripts/` (launch_app.py, run_backend.py, etc.)
+- Test files → `tests/`
+
+**Phase 2 - Frontend/Backend Separation:**
+- `src/`, `public/` → `frontend/src/`, `frontend/public/`
+- `package.json`, `vite.config.ts`, `bun.lockb` → `frontend/`
+- Frontend configs (tsconfig.*, eslint.config.js, tailwind.config.ts) → `frontend/`
+- `QUICK_START/` → `quick-start/` (kebab-case naming)
+- `HUNG_A_NOTES/` → `notes/` (standardized naming)
+
+**Result:** Clear separation enabling independent deployment and development workflows.
 
 ## Quick References
 
-### Start Development
+## Start Development
 
 ```bash
-# Frontend (from frontend/)
+# Frontend (from frontend/ folder)
 cd frontend
 npm install
 npm run dev
 
-# Backend (from backend/)
+# Backend (from backend/ folder)
 cd backend
 python -m venv venv
 source venv/bin/activate  # or venv\Scripts\activate on Windows
@@ -123,7 +141,13 @@ python main.py
 
 ### Deploy to Staging
 
-See `docs/deployment/DEPLOYMENT_GUIDE.md` for step-by-step instructions.
+See `docs/deployment/DEPLOYMENT_GUIDE.md` for step-by-step platform-specific instructions (e.g., Railway, AWS, GCP).
+
+**Quick outline:**
+1. Build frontend: `cd frontend && npm run build`
+2. Start backend: `cd backend && python main.py`
+3. Point frontend to backend URL
+4. Deploy both services to hosting platform
 
 ### Run Tests
 
