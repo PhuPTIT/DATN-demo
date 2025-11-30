@@ -913,6 +913,66 @@ async def clear_cache():
     return {"message": "Cache cleared successfully"}
 
 
+# ============ Screenshot Endpoint ============
+@app.post("/api/capture_screenshot")
+async def capture_screenshot(request: UrlCheckRequest):
+    """
+    Capture a screenshot of a website using Playwright
+    
+    Args:
+        request: Contains the URL to screenshot
+    
+    Returns:
+        JSON with base64 encoded screenshot image
+    """
+    try:
+        import asyncio
+        from playwright.async_api import async_playwright
+        import base64
+        
+        url = request.url
+        if not url.startswith(('http://', 'https://')):
+            url = f'https://{url}'
+        
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=True)
+            page = await browser.new_page(viewport={"width": 1200, "height": 800})
+            
+            try:
+                # Navigate to URL with timeout
+                await page.goto(url, wait_until='networkidle', timeout=30000)
+                
+                # Take screenshot
+                screenshot = await page.screenshot(full_page=True)
+                
+                # Encode to base64
+                screenshot_b64 = base64.b64encode(screenshot).decode('utf-8')
+                
+                await browser.close()
+                
+                return {
+                    "url": url,
+                    "screenshot": f"data:image/png;base64,{screenshot_b64}",
+                    "success": True
+                }
+            except Exception as e:
+                await browser.close()
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Failed to capture screenshot: {str(e)}"
+                )
+    except ImportError:
+        raise HTTPException(
+            status_code=501,
+            detail="Playwright not installed. Install with: pip install playwright && playwright install"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Screenshot service error: {str(e)}"
+        )
+
+
 # ============ Error Handlers ============
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
