@@ -7,26 +7,26 @@ from pathlib import Path
 # ============ Paths ============
 BACKEND_ROOT = Path(__file__).parent
 PROJECT_ROOT = BACKEND_ROOT.parent
-CKPT_DIR = PROJECT_ROOT / "CKPT"
+MODELS_DIR = BACKEND_ROOT / "models"
 
 # Ensure CKPT dir exists
-assert CKPT_DIR.exists(), f"[ERROR] CKPT directory not found at {CKPT_DIR}"
+assert MODELS_DIR.exists(), f"[ERROR] models directory not found at {MODELS_DIR}"
 
 # ============ Model Paths ============
 # RNN (URL)
-RNN_CKPT = CKPT_DIR / "rnn_best_ema.pt"
-RNN_URL_VOCAB = CKPT_DIR / "rnn_url_vocab.json"
-RNN_THRESHOLD_JSON = CKPT_DIR / "rnn_best_threshold.json"
+RNN_CKPT = MODELS_DIR / "rnn_best_ema.pt"
+RNN_URL_VOCAB = MODELS_DIR / "rnn_url_vocab.json"
+RNN_THRESHOLD_JSON = MODELS_DIR / "rnn_best_threshold.json"
 
 # Transformer (HTML)
-TRANSFORMER_CKPT = CKPT_DIR / "transformer_byte_best.pt"
-TRANSFORMER_THRESHOLD_JSON = CKPT_DIR / "transformer_best_threshold.json"
+TRANSFORMER_CKPT = MODELS_DIR / "transformer_byte_best.pt"
+TRANSFORMER_THRESHOLD_JSON = MODELS_DIR / "transformer_best_threshold.json"
 
 # GNN (DOM)
-GNN_CKPT = CKPT_DIR / "gnn_best.pt"
-GNN_TAG_VOCAB = CKPT_DIR / "gnn_tag_vocab.json"
-GNN_THRESHOLD_JSON = CKPT_DIR / "gnn_best_threshold.json"
-GNN_THRESHOLD_CALIBRATED_JSON = CKPT_DIR / "gnn_best_threshold_calibrated.json"
+GNN_CKPT = MODELS_DIR / "gnn_best.pt"
+GNN_TAG_VOCAB = MODELS_DIR / "gnn_tag_vocab.json"
+GNN_THRESHOLD_JSON = MODELS_DIR / "gnn_best_threshold.json"
+GNN_THRESHOLD_CALIBRATED_JSON = MODELS_DIR / "gnn_best_threshold_calibrated.json"
 
 # ============ Model Configs ============
 # RNN Configs

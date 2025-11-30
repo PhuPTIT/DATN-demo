@@ -1,8 +1,0 @@
-{
-  "rows": {
-    "rnn_test_preds": 196292,
-    "trx_test_preds": 587,
-    "gnn_test_preds": 587,
-    "url_test": 196292
-  }
-}

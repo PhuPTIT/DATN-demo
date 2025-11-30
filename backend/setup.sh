@@ -36,6 +36,9 @@ echo "📦 Installing dependencies..."
 pip install -q -r requirements.txt
 echo "✅ Dependencies installed"
 
+:: Install Playwright browsers
+playwright install chromium
+
 echo ""
 echo "✅ Setup complete!"
 echo ""
